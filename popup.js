@@ -114,17 +114,35 @@ document.addEventListener('DOMContentLoaded', () => {
         <tr id="${facebook_id }">
             <th>${facebook_id }</th>
             <th>${facebook_name }</th>
-            <th><img class="delete" data-id="${facebook_id }" style="width: 15px; height: 15px;" src="thrash-can.png"></th>
+            <th><img class="delete" data-id="${facebook_id }" data-name="${facebook_name}" style="width: 15px; height: 15px;" src="thrash-can.png"></th>
         </tr>
         `)
         document.getElementsByClassName('delete')[document.getElementsByClassName('delete').length - 1].addEventListener("click", (e) => {
-            document.getElementById(e.currentTarget.dataset.id).remove();
+            let facebook_id = e.currentTarget.dataset.id;
+            let facebook_name = e.currentTarget.dataset.name;
+            let script = `
+                window.ppl = window.ppl.filter((ppl) => { return ppl !== "${facebook_id}"});
+                window.ppl_name = window.ppl_name.filter((ppl_name) => { return ppl_name !== "${facebook_name}"});
+            `
+            chrome.tabs.executeScript({
+                code: script
+            });
+            removePostByBlackList();
+            document.getElementById(facebook_id).remove();
         })
         document.getElementById('facebook_name').value = "";
         document.getElementById('facebook_id').value = "";
-
+        let script = `
+            if (window.ppl === undefined) {
+                window.ppl = [];
+                window.ppl_name = [];
+            }
+            window.ppl.push("${facebook_id}");
+            window.ppl_name.push("${facebook_name}");
+        `;
+        chrome.tabs.executeScript({
+            code: script,
+        });
+        removePostByBlackList();
     })
-    getCurrentTabUrl((url) => {
-        sendUrl();
-    });
   });
