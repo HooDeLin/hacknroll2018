@@ -44,6 +44,9 @@ function removePostByBlackList(ppl, ppl_name) {
                 }
             }
           })();
+
+          console.log('NOEX BACKGROUND RUNNING');
+
       }, 250);
       `
       chrome.tabs.executeScript({
