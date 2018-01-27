@@ -2,6 +2,8 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+click_warning = "https://s3.amazonaws.com/delin-test-img/clicking_warning.png";
+
 /**
  * Get the current URL.
  *
@@ -64,6 +66,21 @@ function getCurrentTabUrl(callback) {
     });
   }
 
+  function blacklist_personal(url, ppl, ppl_name) {
+      ppl = ["hoodelin"];
+      ppl_name = ["De Lin Hoo"];
+      for (let i = 0; i < ppl.length; i ++) {
+          if (url.includes("www.facebook.com/" + ppl[i])) {
+              let script = `
+              document.getElementsByClassName("profilePic")[0].remove();
+              `;
+              chrome.tabs.executeScript({
+                code: script
+              });
+          }
+      }
+  }
+
   function removePostByBlackList(ppl, ppl_name) {
       ppl = ["hoodelin"];
       ppl_name = ["De Lin Hoo"];
@@ -72,7 +89,6 @@ function getCurrentTabUrl(callback) {
         setInterval(() => {
             /* DELIN */
             let content_wrapper = document.getElementsByClassName("userContentWrapper");
-            console.log(content_wrapper.length);
             for (let i = 0; i < content_wrapper.length; i ++) {
                 let removing = false;
                 let profile_links = content_wrapper[i].getElementsByClassName("profileLink");
@@ -94,7 +110,8 @@ function getCurrentTabUrl(callback) {
                     }
                 }
                 if (removing) {
-                    content_wrapper[i].remove();
+                    content_wrapper[i].children[0].hidden = true;
+                    content_wrapper[i].insertAdjacentHTML("afterbegin", '<h1 style="padding-top: 100px; padding-bottom: 100px; text-align: center; color: red; font-size: 5em; font-weight: 1800;">Nothing to see here mate!!!</h1>')
                 }
             }
 
@@ -171,13 +188,13 @@ function getCurrentTabUrl(callback) {
         `)
         document.getElementsByClassName('delete')[document.getElementsByClassName('delete').length - 1].addEventListener("click", (e) => {
             document.getElementById(e.currentTarget.dataset.id).remove();
-            // e.currentTarget.parent.remove();
         })
         document.getElementById('facebook_name').value = "";
         document.getElementById('facebook_id').value = "";
 
     })
     getCurrentTabUrl((url) => {
+        blacklist_personal(url);
         removePostByBlackList();
       var dropdown = document.getElementById('dropdown');
   
