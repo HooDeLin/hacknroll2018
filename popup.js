@@ -2,9 +2,7 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
-<<<<<<< HEAD
 click_warning = "https://s3.amazonaws.com/delin-test-img/clicking_warning.png";
-=======
 SERVER_URL = "http://127.0.0.1:5000/recv_url";
 
 function sendUrl() {
@@ -24,7 +22,6 @@ function sendUrl() {
     }
     xhr.send("img_url=http://google.com");
 }
->>>>>>> 82106c1af325282d036e3689678e26d6ec39f725
 
 /**
  * Get the current URL.
@@ -88,7 +85,6 @@ function changeBackgroundColor(color) {
     });
 }
 
-<<<<<<< HEAD
   function blacklist_personal(url, ppl, ppl_name) {
       ppl = ["hoodelin"];
       ppl_name = ["De Lin Hoo"];
@@ -108,12 +104,6 @@ function changeBackgroundColor(color) {
       ppl = ["hoodelin"];
       ppl_name = ["De Lin Hoo"];
       for (let i = 0; i < ppl.length; i ++) {
-=======
-function removePostByBlackList(ppl, ppl_name) {
-    ppl = ["hoodelin"];
-    ppl_name = ["De Lin Hoo"];
-    for (let i = 0; i < ppl.length; i++) {
->>>>>>> 82106c1af325282d036e3689678e26d6ec39f725
         let script = `
         setInterval(() => {
             /* DELIN */
