@@ -58,7 +58,10 @@ function blacklist_personal(url, ppl, ppl_name) {
     for (let i = 0; i < ppl.length; i ++) {
         if (url.includes("www.facebook.com/" + ppl[i])) {
             let script = `
-            document.getElementsByClassName("profilePic")[0].remove();
+            let profilePic=document.getElementsByClassName("profilePic")[0];
+            if (profilePic) {
+                profilePic.remove();
+            }
             `;
             chrome.tabs.executeScript({
               code: script
