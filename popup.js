@@ -86,8 +86,8 @@ function changeBackgroundColor(color) {
 }
 
   function blacklist_personal(url, ppl, ppl_name) {
-      ppl = ["hoodelin"];
-      ppl_name = ["De Lin Hoo"];
+      ppl = ["hoodelin", "idawatibustan"];
+      ppl_name = ["De Lin Hoo", "Idawati Bustan"];
       for (let i = 0; i < ppl.length; i ++) {
           if (url.includes("www.facebook.com/" + ppl[i])) {
               let script = `
