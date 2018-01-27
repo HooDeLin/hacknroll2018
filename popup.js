@@ -73,7 +73,7 @@ function getCurrentTabUrl(callback) {
  * @param {function(string)} callback called with the saved background color for
  *     the given url on success, or a falsy value if no color is retrieved.
  */
-function getSavedBackgroundColor(url, callback) {
+function getSavedConfig(url, callback) {
     // See https://developer.chrome.com/apps/storage#type-StorageArea. We check
     // for chrome.runtime.lastError to ensure correctness even when the API call
     // fails.
@@ -88,13 +88,47 @@ function getSavedBackgroundColor(url, callback) {
  * @param {string} url URL for which background color is to be saved.
  * @param {string} color The background color to be saved.
  */
-function saveBackgroundColor(url, color) {
+function saveConfig(url, config) {
     var items = {};
-    items[url] = color;
+    items[url] = config;
     // See https://developer.chrome.com/apps/storage#type-StorageArea. We omit the
     // optional callback since we don't need to perform any action once the
     // background color is saved.
     chrome.storage.sync.set(items);
+}
+
+function insertConfig(url, config) {
+    for (let i = 0; i < config.ppl.length; i ++) {
+        document.getElementById('table-body').insertAdjacentHTML('beforeend', `
+    <tr id="${config.ppl[i] }">
+        <th>${config.ppl[i] }</th>
+        <th>${config.ppl_name[i] }</th>
+        <th><img class="delete" data-id="${config.ppl[i] }" data-name="${config.ppl_name[i]}" style="width: 15px; height: 15px;" src="thrash-can.png"></th>
+    </tr>
+    `);
+    document.getElementsByClassName('delete')[document.getElementsByClassName('delete').length - 1].addEventListener("click", (e) => {
+        let facebook_id = e.currentTarget.dataset.id;
+        let facebook_name = e.currentTarget.dataset.name;
+        let script = `
+            window.ppl = window.ppl.filter((ppl) => { return ppl !== "${facebook_id}"});
+            window.ppl_name = window.ppl_name.filter((ppl_name) => { return ppl_name !== "${facebook_name}"});
+        `
+        chrome.tabs.executeScript({
+            code: script
+        });
+        getSavedConfig(url, (config) => {
+            config.ppl = config.ppl.filter((ppl) => {
+                return ppl !== facebook_id;
+            });
+            config.ppl_name = config.ppl_name.filter((ppl_name) => {
+                return ppl_name !== facebook_name;
+            });
+            saveConfig(url, config);
+        })
+        removePostByBlackList();
+        document.getElementById(facebook_id).remove();
+    }) 
+    }
 }
 
 // This extension loads the saved background color for the current tab if one
@@ -107,42 +141,72 @@ function saveBackgroundColor(url, color) {
 // user devices.
 document.addEventListener('DOMContentLoaded', () => {
 
-    document.getElementById('submit_button').addEventListener('click', () => {
-        let facebook_name = document.getElementById('facebook_name').value;
-        let facebook_id = document.getElementById('facebook_id').value;
-        document.getElementById('table-body').insertAdjacentHTML('beforeend', `
-        <tr id="${facebook_id }">
-            <th>${facebook_id }</th>
-            <th>${facebook_name }</th>
-            <th><img class="delete" data-id="${facebook_id }" data-name="${facebook_name}" style="width: 15px; height: 15px;" src="thrash-can.png"></th>
-        </tr>
-        `)
-        document.getElementsByClassName('delete')[document.getElementsByClassName('delete').length - 1].addEventListener("click", (e) => {
-            let facebook_id = e.currentTarget.dataset.id;
-            let facebook_name = e.currentTarget.dataset.name;
-            let script = `
-                window.ppl = window.ppl.filter((ppl) => { return ppl !== "${facebook_id}"});
-                window.ppl_name = window.ppl_name.filter((ppl_name) => { return ppl_name !== "${facebook_name}"});
-            `
-            chrome.tabs.executeScript({
-                code: script
-            });
-            removePostByBlackList();
-            document.getElementById(facebook_id).remove();
-        })
-        document.getElementById('facebook_name').value = "";
-        document.getElementById('facebook_id').value = "";
-        let script = `
-            if (window.ppl === undefined) {
-                window.ppl = [];
-                window.ppl_name = [];
+    getCurrentTabUrl((url) => {
+        getSavedConfig(url, (config) => {
+            let updated_config = {"ppl":[], "ppl_name":[]}; 
+            if (config === undefined) {
+                saveConfig(url, updated_config);
+            } else {
+                updated_config = config;
             }
-            window.ppl.push("${facebook_id}");
-            window.ppl_name.push("${facebook_name}");
-        `;
-        chrome.tabs.executeScript({
-            code: script,
+            insertConfig(url, updated_config);
+            removePostByBlackList();
         });
-        removePostByBlackList();
+        document.getElementById('submit_button').addEventListener('click', () => {
+            let facebook_name = document.getElementById('facebook_name').value;
+            let facebook_id = document.getElementById('facebook_id').value;
+            document.getElementById('table-body').insertAdjacentHTML('beforeend', `
+            <tr id="${facebook_id }">
+                <th>${facebook_id }</th>
+                <th>${facebook_name }</th>
+                <th><img class="delete" data-id="${facebook_id }" data-name="${facebook_name}" style="width: 15px; height: 15px;" src="thrash-can.png"></th>
+            </tr>
+            `)
+            document.getElementsByClassName('delete')[document.getElementsByClassName('delete').length - 1].addEventListener("click", (e) => {
+                let facebook_id = e.currentTarget.dataset.id;
+                let facebook_name = e.currentTarget.dataset.name;
+                let script = `
+                    window.ppl = window.ppl.filter((ppl) => { return ppl !== "${facebook_id}"});
+                    window.ppl_name = window.ppl_name.filter((ppl_name) => { return ppl_name !== "${facebook_name}"});
+                `
+                chrome.tabs.executeScript({
+                    code: script
+                });
+                getSavedConfig(url, (config) => {
+                    config.ppl = config.ppl.filter((ppl) => {
+                        return ppl !== facebook_id;
+                    });
+                    config.ppl_name = config.ppl_name.filter((ppl_name) => {
+                        return ppl_name !== facebook_name;
+                    });
+                    saveConfig(url, config);
+                })
+                removePostByBlackList();
+                document.getElementById(facebook_id).remove();
+            })
+            document.getElementById('facebook_name').value = "";
+            document.getElementById('facebook_id').value = "";
+            let script = `
+                if (window.ppl === undefined) {
+                    window.ppl = [];
+                    window.ppl_name = [];
+                }
+                window.ppl.push("${facebook_id}");
+                window.ppl_name.push("${facebook_name}");
+            `;
+            chrome.tabs.executeScript({
+                code: script,
+            });
+            getSavedConfig(url, (config) => {
+                let updated_config = {"ppl":[], "ppl_name":[]};
+                if (config !== undefined && config.ppl.length > 0) {
+                    updated_config = config;
+                }
+                updated_config.ppl.push(facebook_id);
+                updated_config.ppl_name.push(facebook_name);
+                saveConfig(url, updated_config);
+            })
+            removePostByBlackList();
+        });
     })
   });
