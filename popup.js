@@ -63,6 +63,49 @@ function getCurrentTabUrl(callback) {
       code: script
     });
   }
+
+  function removePostByBlackList(ppl, ppl_name) {
+      ppl = ["hoodelin"];
+      ppl_name = ["De Lin Hoo"];
+      for (let i = 0; i < ppl.length; i ++) {
+        let script = `
+        setInterval(() => {
+            let content_wrapper = document.getElementsByClassName("userContentWrapper");
+            console.log(content_wrapper.length);
+            for (let i = 0; i < content_wrapper.length; i ++) {
+                let removing = false;
+                let profile_links = content_wrapper[i].getElementsByClassName("profileLink");
+                for (let j = 0; j < profile_links.length; j ++) {
+                    if (profile_links[j].href.includes("${ppl[i]}")) {
+                        removing = true;
+                        break;
+                    }
+                }
+                let tooltips = content_wrapper[i].getElementsByTagName("a")
+                for (let j = 0; j < tooltips.length; j ++) {
+                    if (tooltips[j].dataset.tooltipContent !== undefined && tooltips[j].dataset.tooltipContent.includes("${ppl_name[i]}")) {
+                        removing = true;
+                        break;
+                    }
+                    if (tooltips[j].href.includes("${ppl[i]}")) {
+                        removing = true;
+                        break;
+                    }
+                }
+                if (removing) {
+                    console.log(i);
+                    console.log(content_wrapper);
+                    console.log(content_wrapper[i]);
+                    content_wrapper[i].remove();
+                }
+            }
+        }, 250);
+        `
+        chrome.tabs.executeScript({
+            code: script
+        });
+      }
+  }
   
   /**
    * Gets the saved background color for url.
@@ -105,6 +148,7 @@ function getCurrentTabUrl(callback) {
   // user devices.
   document.addEventListener('DOMContentLoaded', () => {
     getCurrentTabUrl((url) => {
+        removePostByBlackList();
       var dropdown = document.getElementById('dropdown');
   
       // Load the saved background color for this page and modify the dropdown
