@@ -23,8 +23,16 @@ def hello_world():
 @app.route('/recv_url', methods=['POST'])
 def recv_url():
     img_url = request.form.get("img_url")
+    height = request.form.get("height")
+    width = request.form.get("width")
+    top = request.form.get("top")
+    left = request.form.get("left")
     # todo: return the results of whatever the CV library returns
     print img_url
+    print height
+    print width
+    print top
+    print left
     return "this is the uglified image url"
 
 def get_as_base64(url):

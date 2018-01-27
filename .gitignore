@@ -1,3 +1,4 @@
 cv_server/venv
 *.pyc
 .DS_Store
+cv_server/.env

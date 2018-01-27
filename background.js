@@ -46,7 +46,23 @@ function removePostByBlackList(ppl, ppl_name) {
             for (var i=0;i<children.length;i++) {
                 var child=children[i];
                 if (child.text && child.text.includes("${ppl_name[i]}")) {
-                    child.childNodes[0].style.background="red";
+                    if (child.childNodes[0].style.background !== "red") {
+                        child.childNodes[0].style.background="red";
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("POST", "http://127.0.0.1:5000/recv_url", true);
+                        xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+                        xhr.onload = () => {
+                            if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+                                console.log(xhr.responseText);
+                            }
+                        }
+                        console.log(child.child)
+                        xhr.send("img_url=" + document.getElementsByClassName("spotlight")[0].src +"&width="
+                        + encodeURIComponent(child.childNodes[0].style.width) + "&height="
+                        + encodeURIComponent(child.childNodes[0].style.height) + "&left="
+                        + encodeURIComponent(child.childNodes[0].style.left) + "&top="
+                        + encodeURIComponent(child.childNodes[0].style.top));
+                    }
                 }
             }
           })();
