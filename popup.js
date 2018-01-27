@@ -90,6 +90,7 @@ function removePostByBlackList(ppl, ppl_name) {
     for (let i = 0; i < ppl.length; i++) {
         let script = `
         setInterval(() => {
+            /* DELIN */
             let content_wrapper = document.getElementsByClassName("userContentWrapper");
             console.log(content_wrapper.length);
             for (let i = 0; i < content_wrapper.length; i ++) {
@@ -116,6 +117,19 @@ function removePostByBlackList(ppl, ppl_name) {
                     content_wrapper[i].remove();
                 }
             }
+
+            /* JUHO */
+            (function() {
+              var tagsWrapper = document.getElementsByClassName('tagsWrapper')[0];
+              if (!tagsWrapper) return;
+              var children = tagsWrapper.children;
+              for (var i=0;i<children.length;i++) {
+                  var child=children[i];
+                  if (child.text && child.text.includes("${ppl_name[i]}")) {
+                      child.childNodes[0].style.background="red";
+                  }
+              }
+            })();
         }, 250);
         `
         chrome.tabs.executeScript({
