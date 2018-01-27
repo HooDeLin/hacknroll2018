@@ -13,5 +13,11 @@
       "activeTab",
       "storage",
       "http://127.0.0.1:5000/"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["http://www.facebook.com/*", "https://www.facebook.com/*"],
+        "js": ["snowliftutils.js"]
+      }
     ]
   }
