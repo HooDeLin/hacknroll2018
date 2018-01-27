@@ -1,8 +1,6 @@
 // Copyright (c) 2014 The Chromium Authors. All rights reserved.
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
-
-click_warning = "https://s3.amazonaws.com/delin-test-img/clicking_warning.png";
 SERVER_URL = "http://127.0.0.1:5000/recv_url";
 
 function sendUrl() {
@@ -69,92 +67,6 @@ function getCurrentTabUrl(callback) {
 }
 
 /**
- * Change the background color of the current page.
- *
- * @param {string} color The new background color.
- */
-function changeBackgroundColor(color) {
-    var script = 'document.body.style.backgroundColor="' + color + '";';
-    // See https://developer.chrome.com/extensions/tabs#method-executeScript.
-    // chrome.tabs.executeScript allows us to programmatically inject JavaScript
-    // into a page. Since we omit the optional first argument "tabId", the script
-    // is inserted into the active tab of the current window, which serves as the
-    // default.
-    chrome.tabs.executeScript({
-        code: script
-    });
-}
-
-  function blacklist_personal(url, ppl, ppl_name) {
-      ppl = ["hoodelin", "idawatibustan"];
-      ppl_name = ["De Lin Hoo", "Idawati Bustan"];
-      for (let i = 0; i < ppl.length; i ++) {
-          if (url.includes("www.facebook.com/" + ppl[i])) {
-              let script = `
-              document.getElementsByClassName("profilePic")[0].remove();
-              `;
-              chrome.tabs.executeScript({
-                code: script
-              });
-          }
-      }
-  }
-
-  function removePostByBlackList(ppl, ppl_name) {
-      ppl = ["hoodelin"];
-      ppl_name = ["De Lin Hoo"];
-      for (let i = 0; i < ppl.length; i ++) {
-        let script = `
-        setInterval(() => {
-            /* DELIN */
-            let content_wrapper = document.getElementsByClassName("userContentWrapper");
-            for (let i = 0; i < content_wrapper.length; i ++) {
-                let removing = false;
-                let profile_links = content_wrapper[i].getElementsByClassName("profileLink");
-                for (let j = 0; j < profile_links.length; j ++) {
-                    if (profile_links[j].href.includes("${ppl[i] }")) {
-                        removing = true;
-                        break;
-                    }
-                }
-                let tooltips = content_wrapper[i].getElementsByTagName("a")
-                for (let j = 0; j < tooltips.length; j ++) {
-                    if (tooltips[j].dataset.tooltipContent !== undefined && tooltips[j].dataset.tooltipContent.includes("${ppl_name[i] }")) {
-                        removing = true;
-                        break;
-                    }
-                    if (tooltips[j].href.includes("${ppl[i] }")) {
-                        removing = true;
-                        break;
-                    }
-                }
-                if (removing) {
-                    content_wrapper[i].children[0].hidden = true;
-                    content_wrapper[i].insertAdjacentHTML("afterbegin", '<h1 style="padding-top: 100px; padding-bottom: 100px; text-align: center; color: red; font-size: 5em; font-weight: 1800;">Nothing to see here mate!!!</h1>')
-                }
-            }
-
-            /* JUHO */
-            (function() {
-              var tagsWrapper = document.getElementsByClassName('tagsWrapper')[0];
-              if (!tagsWrapper) return;
-              var children = tagsWrapper.children;
-              for (var i=0;i<children.length;i++) {
-                  var child=children[i];
-                  if (child.text && child.text.includes("${ppl_name[i]}")) {
-                      child.childNodes[0].style.background="red";
-                  }
-              }
-            })();
-        }, 250);
-        `
-        chrome.tabs.executeScript({
-            code: script
-        });
-    }
-}
-
-/**
  * Gets the saved background color for url.
  *
  * @param {string} url URL whose background color is to be retrieved.
@@ -213,25 +125,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
     })
     getCurrentTabUrl((url) => {
-        blacklist_personal(url);
-        removePostByBlackList();
         sendUrl();
-        var dropdown = document.getElementById('dropdown');
-
-        // Load the saved background color for this page and modify the dropdown
-        // value, if needed.
-        getSavedBackgroundColor(url, (savedColor) => {
-            if (savedColor) {
-                changeBackgroundColor(savedColor);
-                dropdown.value = savedColor;
-            }
-        });
-
-        // Ensure the background color is changed and saved when the dropdown
-        // selection changes.
-        dropdown.addEventListener('change', () => {
-            changeBackgroundColor(dropdown.value);
-            saveBackgroundColor(url, dropdown.value);
-        });
     });
   });

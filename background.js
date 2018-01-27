@@ -52,6 +52,24 @@ function removePostByBlackList(ppl, ppl_name) {
   }
 }
 
-chrome.tabs.onUpdated.addListener(function() {
-    removePostByBlackList();    
+function blacklist_personal(url, ppl, ppl_name) {
+    ppl = ["hoodelin"];
+    ppl_name = ["De Lin Hoo"];
+    for (let i = 0; i < ppl.length; i ++) {
+        if (url.includes("www.facebook.com/" + ppl[i])) {
+            let script = `
+            document.getElementsByClassName("profilePic")[0].remove();
+            `;
+            chrome.tabs.executeScript({
+              code: script
+            });
+        }
+    }
+}
+
+chrome.tabs.onUpdated.addListener(function(id, changedInfo, tab) {
+    if (tab.url.includes("www.facebook.com")) {
+        removePostByBlackList();
+        blacklist_personal(tab.url);
+    }
 });
