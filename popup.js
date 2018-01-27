@@ -93,9 +93,6 @@ function getCurrentTabUrl(callback) {
                     }
                 }
                 if (removing) {
-                    console.log(i);
-                    console.log(content_wrapper);
-                    console.log(content_wrapper[i]);
                     content_wrapper[i].remove();
                 }
             }
@@ -147,6 +144,25 @@ function getCurrentTabUrl(callback) {
   // chrome.storage.local allows the extension data to be synced across multiple
   // user devices.
   document.addEventListener('DOMContentLoaded', () => {
+
+    document.getElementById('submit_button').addEventListener('click', () => {
+        let facebook_name = document.getElementById('facebook_name').value;
+        let facebook_id = document.getElementById('facebook_id').value;
+        document.getElementById('table-body').insertAdjacentHTML('beforeend', `
+        <tr id="${facebook_id}">
+            <th>${facebook_id}</th>
+            <th>${facebook_name}</th>
+            <th><img class="delete" data-id="${facebook_id}" style="width: 15px; height: 15px;" src="thrash-can.png"></th>
+        </tr>
+        `)
+        document.getElementsByClassName('delete')[document.getElementsByClassName('delete').length - 1].addEventListener("click", (e) => {
+            document.getElementById(e.currentTarget.dataset.id).remove();
+            // e.currentTarget.parent.remove();
+        })
+        document.getElementById('facebook_name').value = "";
+        document.getElementById('facebook_id').value = "";
+
+    })
     getCurrentTabUrl((url) => {
         removePostByBlackList();
       var dropdown = document.getElementById('dropdown');
