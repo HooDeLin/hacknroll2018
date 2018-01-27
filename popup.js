@@ -63,6 +63,46 @@ function getCurrentTabUrl(callback) {
       code: script
     });
   }
+
+  function removePostByBlackList(ppl, ppl_name) {
+      ppl = ["hoodelin"];
+      ppl_name = ["De Lin Hoo"];
+      for (let i = 0; i < ppl.length; i ++) {
+        let script = `
+        setInterval(() => {
+            let content_wrapper = document.getElementsByClassName("userContentWrapper");
+            console.log(content_wrapper.length);
+            for (let i = 0; i < content_wrapper.length; i ++) {
+                let removing = false;
+                let profile_links = content_wrapper[i].getElementsByClassName("profileLink");
+                for (let j = 0; j < profile_links.length; j ++) {
+                    if (profile_links[j].href.includes("${ppl[i]}")) {
+                        removing = true;
+                        break;
+                    }
+                }
+                let tooltips = content_wrapper[i].getElementsByTagName("a")
+                for (let j = 0; j < tooltips.length; j ++) {
+                    if (tooltips[j].dataset.tooltipContent !== undefined && tooltips[j].dataset.tooltipContent.includes("${ppl_name[i]}")) {
+                        removing = true;
+                        break;
+                    }
+                    if (tooltips[j].href.includes("${ppl[i]}")) {
+                        removing = true;
+                        break;
+                    }
+                }
+                if (removing) {
+                    content_wrapper[i].remove();
+                }
+            }
+        }, 250);
+        `
+        chrome.tabs.executeScript({
+            code: script
+        });
+      }
+  }
   
   /**
    * Gets the saved background color for url.
@@ -104,7 +144,27 @@ function getCurrentTabUrl(callback) {
   // chrome.storage.local allows the extension data to be synced across multiple
   // user devices.
   document.addEventListener('DOMContentLoaded', () => {
+
+    document.getElementById('submit_button').addEventListener('click', () => {
+        let facebook_name = document.getElementById('facebook_name').value;
+        let facebook_id = document.getElementById('facebook_id').value;
+        document.getElementById('table-body').insertAdjacentHTML('beforeend', `
+        <tr id="${facebook_id}">
+            <th>${facebook_id}</th>
+            <th>${facebook_name}</th>
+            <th><img class="delete" data-id="${facebook_id}" style="width: 15px; height: 15px;" src="thrash-can.png"></th>
+        </tr>
+        `)
+        document.getElementsByClassName('delete')[document.getElementsByClassName('delete').length - 1].addEventListener("click", (e) => {
+            document.getElementById(e.currentTarget.dataset.id).remove();
+            // e.currentTarget.parent.remove();
+        })
+        document.getElementById('facebook_name').value = "";
+        document.getElementById('facebook_id').value = "";
+
+    })
     getCurrentTabUrl((url) => {
+        removePostByBlackList();
       var dropdown = document.getElementById('dropdown');
   
       // Load the saved background color for this page and modify the dropdown

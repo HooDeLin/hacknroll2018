@@ -2,22 +2,11 @@
 <!-- saved from url=(0080)https://developer.chrome.com/extensions/examples/tutorials/getstarted/popup.html -->
 <html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <title>Getting Started Extension's Popup</title>
-    <style type="text/css">
-      body {
-        margin: 10px;
-        white-space: nowrap;
-      }
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.3/css/materialize.min.css">
 
-      h1 {
-        font-size: 15px;
-      }
-
-      #container {
-        align-items: center;
-        display: flex;
-        justify-content: space-between;
-      }
-    </style>
+    <!-- Compiled and minified JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-alpha.3/js/materialize.min.js"></script>
 
     <!--
       - JavaScript and HTML must be in separate files: see our Content Security
@@ -26,20 +15,61 @@
       - [1]: https://developer.chrome.com/extensions/contentSecurityPolicy
     -->
     <script src="./popup.js"></script>
+    <style type="text/css">
+        nav {
+            min-width: 350px;
+        }
+        /* table {
+            max-height: 500px;
+        } */
+        .center-container {
+            text-align: center;
+        }
+        #submit_button {
+            text-align: center;
+        }
+        .thrash-can {
+            background: url(chrome://resources/images/trash.png) 0 0 no-repeat;
+        }
+      </style>
   </head>
+  <nav>
+    <div class="nav-wrapper">
+      <a href="#" class="brand-logo">No-x</a>
+    </div>
+  </nav>
 
   <body>
-    <h1>Background Color Changer</h1>
-    <div id="container">
-      <span>Choose a color</span>
-      <select id="dropdown">
-        <option selected="" disabled="" hidden="" value=""></option>
-        <option value="white">White</option>
-        <option value="pink">Pink</option>
-        <option value="green">Green</option>
-        <option value="yellow">Yellow</option>
-      </select>
-    </div>
-  
+        <div class="center-container container">
+                <h6>An ex uglifier for your social media</h6>
+                <div class="table-container">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Facebook ID</th>
+                                <th>Facebook Name</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        
+                        <tbody id="table-body">
+                        </tbody>
+                    </table>
+                </div>
+                <div class="row">
+                    <form class="s12">
+                            <div class="row">
+                                    <div class="input-field col s6">
+                                      <input placeholder="Facebook ID" id="facebook_id" type="text" class="validate">
+                                    </div>
+                                    <div class="input-field col s6">
+                                      <input placeholder="Facebook Name" id="facebook_name" type="text" class="validate">
+                                    </div>
+                            </div>
+                    </form>
+                </div>
+                <a class="waves-effect waves-light btn" id="submit_button">Add to black list</a>
+      </div>
+  </body>
 
-</body></html>
+  </html>
