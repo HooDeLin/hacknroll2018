@@ -15,16 +15,12 @@ GCPV_ENDPOINT="https://vision.googleapis.com/v1/images:annotate?key="+API_KEY
 def hello_world():
     return render_template('index.html')
 
-@app.route('/upload', methods=['POST'])
-def upload_file():
-    file = request.files['image']
-    f = os.path.join(app.config['UPLOAD_FOLDER'], file.filename)
-    
-    # add your custom code to check that the uploaded file is a valid image and not a malicious file (out-of-scope for this post)
-    file.save(f)
-
-    # todo: change this to return a JSON response
-    return render_template('index.html')
+@app.route('/recv_url', methods=['POST'])
+def recv_url():
+    img_url = request.form.get("img_url")
+    # todo: return the results of whatever the CV library returns
+    print img_url
+    return "hello world"
 
 def get_as_base64(url):
     return base64.b64encode(requests.get(url).content)

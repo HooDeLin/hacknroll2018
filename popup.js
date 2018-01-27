@@ -2,6 +2,24 @@
 // Use of this source code is governed by a BSD-style license that can be
 // found in the LICENSE file.
 
+SERVER_URL = "http://127.0.0.1:5000/recv_url";
+
+function sendUrl() {
+  var xhr = new XMLHttpRequest();
+  xhr.open("POST", SERVER_URL, true);
+  
+  //Send the proper header information along with the request
+  xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
+  
+  xhr.onreadystatechange = function() {//Call a function when the state changes.
+      if(xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
+          // Request finished. Do processing here.
+          console.log("hello there the request finished running!")
+      }
+  }
+  xhr.send("img_url=http://google.com");
+}
+
 /**
  * Get the current URL.
  *
@@ -148,7 +166,8 @@ function getCurrentTabUrl(callback) {
   // user devices.
   document.addEventListener('DOMContentLoaded', () => {
     getCurrentTabUrl((url) => {
-        removePostByBlackList();
+      removePostByBlackList();
+      sendUrl();
       var dropdown = document.getElementById('dropdown');
   
       // Load the saved background color for this page and modify the dropdown
