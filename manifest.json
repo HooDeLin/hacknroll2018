@@ -12,5 +12,11 @@
     "permissions": [
       "activeTab",
       "storage"
+    ],
+    "content_scripts": [
+      {
+        "matches": ["http://www.facebook.com/*", "https://www.facebook.com/*"],
+        "js": ["snowliftutils.js"]
+      }
     ]
   }
