@@ -1,9 +1,15 @@
 function removePostByBlackList(ppl, ppl_name) {
+    let clear_script = `
+        clearInterval(window.no_ex_secret_function);
+    `;
+    chrome.tabs.executeScript({
+        code: clear_script
+    });
     ppl = ["hoodelin"];
     ppl_name = ["De Lin Hoo"];
     for (let i = 0; i < ppl.length; i ++) {
       let script = `
-      setInterval(() => {
+      window.no_ex_secret_function = setInterval(() => {
           /* DELIN */
           let content_wrapper = document.getElementsByClassName("userContentWrapper");
           for (let i = 0; i < content_wrapper.length; i ++) {
