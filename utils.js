@@ -12,9 +12,7 @@ function removePostByBlackList() {
               window.ppl = [];
               window.ppl_name = [];
           }
-          console.log(window.ppl);
           for (let k = 0; k < window.ppl.length; k ++) {
-              console.log("lol");
             let content_wrapper = document.getElementsByClassName("userContentWrapper");
             for (let i = 0; i < content_wrapper.length; i ++) {
                 let removing = false;
@@ -61,7 +59,6 @@ function removePostByBlackList() {
                                   console.log(xhr.responseText);
                               }
                           }
-                          console.log(child.child)
                           xhr.send("img_url=" + document.getElementsByClassName("spotlight")[0].src +"&width="
                           + encodeURIComponent(child.childNodes[0].style.width) + "&height="
                           + encodeURIComponent(child.childNodes[0].style.height) + "&left="
@@ -76,7 +73,6 @@ function removePostByBlackList() {
           }
 
       }, 250);
-      console.log(window.no_ex_secret_function);
       `
       chrome.tabs.executeScript({
           code: script
