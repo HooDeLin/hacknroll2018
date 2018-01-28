@@ -12,6 +12,7 @@ import cStringIO
 
 eye_l = Image.open("masks/eye_l.png", 'r')
 eye_r = Image.open("masks/eye_r.png", 'r')
+pimple = Image.open("masks/pimple.png", 'r')
 
 app = Flask(__name__)
 
@@ -40,7 +41,8 @@ def recv_url():
     print top
     print left
 
-    new_img = detect_face(img_url)
+    image = get_as_base64(img_url)
+    new_img = detect_face(image)
     return new_img
 
 
@@ -88,6 +90,8 @@ def draw_face(image, img_data):
             nose_left=(pos['x'], pos['y'])
         elif a['type']=="NOSE_BOTTOM_RIGHT":
             nose_right=(pos['x'], pos['y'])
+        elif a['type']=="NOSE_TIP":
+            nose_ctr=(pos['x'], pos['y'])
         # draw.rectangle( (pos['x']-1, pos['y']-1) + (pos['x']+1, pos['y']+1), fill=(0,255,0))
 
     # del draw
@@ -111,6 +115,11 @@ def draw_face(image, img_data):
     img2 = img2.resize((w, h))
     t_l = ( t_l[0]-(w-img2.size[0]), t_l[1]-(h-img2.size[1]) )
     im.paste(img2, t_l) # draw mouth
+
+    # draw on nose
+    size=int( abs(nose_left[0]-nose_right[0]) * 0.4)
+    pp = pimple.resize((size,size))
+    im.paste(pp, (int(nose_ctr[0]-(size/2)), int(nose_ctr[1]-(size/2))), mask=pp)
 
     # face = f1.transform(f1.size, Image.QUAD, original, resample=Image.BICUBIC)
     # face_mask = f1_mask.transform(f1.size, Image.QUAD, original, resample=Image.BICUBIC)
