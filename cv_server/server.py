@@ -42,12 +42,41 @@ def recv_url():
     print left
 
     image = get_as_base64(img_url)
-    new_img = detect_face(image)
+    new_img = uglify(image, [height, width, top, left])
+    # new_img = detect_face(image)
     return new_img
 
 
 def get_as_base64(url):
     return base64.b64encode(requests.get(url).content)
+
+def uglify(image, pos_percentage):
+    im = Image.open(BytesIO(base64.b64decode(image)))
+    w, h = im.size
+
+    height, width, left, top = [float(x.split("%")[0]) for x in pos_percentage]
+    height = height*h/100
+    top = top*h/100
+    width = width*w/100
+    left = left*w/100
+
+    position=[top, left, top+width, left+height]
+    cropped_img = im.crop(position)
+
+    buffer = cStringIO.StringIO()
+    cropped_img.save(buffer, format="JPEG")
+    img_str = base64.b64encode(buffer.getvalue())
+
+    edited_img = detect_face(img_str)
+
+    # add cropped
+    face = Image.open(BytesIO(base64.b64decode(edited_img)))
+
+    im.paste(face, (int(top), int(left)))
+    buffer = cStringIO.StringIO()
+    im.save(buffer, format="JPEG")
+    img_str = base64.b64encode(buffer.getvalue())
+    return img_str
 
 def draw_face(image, img_data):
     # load image, open for drawing
