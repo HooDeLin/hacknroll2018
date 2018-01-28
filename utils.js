@@ -50,13 +50,14 @@ function removePostByBlackList() {
                   if (child.text && child.text.includes(window.ppl_name[k])) {
                       if (!child.childNodes[0].className.includes('modified')) {
                           child.childNodes[0].classList.add('modified');
-                          child.insertAdjacentHTML("beforeend", '<img class="fbPhotosPhotoTagboxBase tagBox" style="width: '+child.childNodes[0].style.width+';height: '+child.childNodes[0].style.height+';top: '+child.childNodes[0].style.top+';left:'+child.childNodes[0].style.left+'" src="https://cdn.shopify.com/s/files/1/1061/1924/files/Middle_Finger_Emoji.png?9898922749706957214">')
+                          child.insertAdjacentHTML("beforeend", '<img class="fbPhotosPhotoTagboxBase tagBox middle-finger" style="width: '+child.childNodes[0].style.width+';height: '+child.childNodes[0].style.height+';top: '+child.childNodes[0].style.top+';left:'+child.childNodes[0].style.left+'" src="https://cdn.shopify.com/s/files/1/1061/1924/files/Middle_Finger_Emoji.png?9898922749706957214">')
                           var xhr = new XMLHttpRequest();
                           xhr.open("POST", "http://127.0.0.1:5000/recv_url", true);
                           xhr.setRequestHeader("Content-type", "application/x-www-form-urlencoded");
                           xhr.onload = () => {
                               if (xhr.readyState == XMLHttpRequest.DONE && xhr.status == 200) {
-                                  console.log(xhr.responseText);
+                                document.getElementsByClassName("spotlight")[0].src = "data:image/png;base64," + xhr.responseText;
+                                document.getElementsByClassName("middle-finger")[0].remove();
                               }
                           }
                           xhr.send("img_url=" + document.getElementsByClassName("spotlight")[0].src +"&width="

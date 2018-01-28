@@ -34,6 +34,7 @@ def recv_url():
     width = request.form.get("width")
     top = request.form.get("top")
     left = request.form.get("left")
+    oe = request.form.get("oe")
     # todo: return the results of whatever the CV library returns
     print img_url
     print height
@@ -41,7 +42,7 @@ def recv_url():
     print top
     print left
 
-    image = get_as_base64(img_url)
+    image = get_as_base64(img_url + "&oe=" + oe)
     new_img = uglify(image, [height, width, top, left])
     # new_img = detect_face(image)
     return new_img
