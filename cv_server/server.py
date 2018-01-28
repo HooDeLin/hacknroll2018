@@ -39,7 +39,10 @@ def recv_url():
     print width
     print top
     print left
-    return "this is the uglified image url"
+
+    new_img = detect_face(img_url)
+    return new_img
+
 
 def get_as_base64(url):
     return base64.b64encode(requests.get(url).content)
