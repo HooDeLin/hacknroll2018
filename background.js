@@ -19,6 +19,6 @@ function blacklist_personal(url, ppl, ppl_name) {
 chrome.tabs.onUpdated.addListener(function(id, changedInfo, tab) {
     if (tab.url.includes("www.facebook.com")) {
         removePostByBlackList();
-        blacklist_personal(tab.url);
+        blacklist_personal(new URL(tab.url).hostname);
     }
 });

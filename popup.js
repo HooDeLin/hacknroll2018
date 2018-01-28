@@ -116,14 +116,14 @@ function insertConfig(url, config) {
         chrome.tabs.executeScript({
             code: script
         });
-        getSavedConfig(url, (config) => {
+        getSavedConfig(new URL(url).hostname, (config) => {
             config.ppl = config.ppl.filter((ppl) => {
                 return ppl !== facebook_id;
             });
             config.ppl_name = config.ppl_name.filter((ppl_name) => {
                 return ppl_name !== facebook_name;
             });
-            saveConfig(url, config);
+            saveConfig(new URL(url).hostname, config);
         })
         removePostByBlackList();
         document.getElementById(facebook_id).remove();
@@ -142,14 +142,15 @@ function insertConfig(url, config) {
 document.addEventListener('DOMContentLoaded', () => {
 
     getCurrentTabUrl((url) => {
-        getSavedConfig(url, (config) => {
+        getSavedConfig(new URL(url).hostname, (config) => {
             let updated_config = {"ppl":[], "ppl_name":[]}; 
             if (config === undefined) {
-                saveConfig(url, updated_config);
+                saveConfig(new URL(url).hostname, updated_config);
             } else {
                 updated_config = config;
             }
-            insertConfig(url, updated_config);
+
+            insertConfig(new URL(url).hostname, updated_config);
             removePostByBlackList();
         });
         document.getElementById('submit_button').addEventListener('click', () => {
@@ -172,14 +173,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 chrome.tabs.executeScript({
                     code: script
                 });
-                getSavedConfig(url, (config) => {
+                getSavedConfig(new URL(url).hostname, (config) => {
                     config.ppl = config.ppl.filter((ppl) => {
                         return ppl !== facebook_id;
                     });
                     config.ppl_name = config.ppl_name.filter((ppl_name) => {
                         return ppl_name !== facebook_name;
                     });
-                    saveConfig(url, config);
+                    saveConfig(new URL(url).hostname, config);
                 })
                 removePostByBlackList();
                 document.getElementById(facebook_id).remove();
@@ -197,14 +198,14 @@ document.addEventListener('DOMContentLoaded', () => {
             chrome.tabs.executeScript({
                 code: script,
             });
-            getSavedConfig(url, (config) => {
+            getSavedConfig(new URL(url).hostname, (config) => {
                 let updated_config = {"ppl":[], "ppl_name":[]};
                 if (config !== undefined && config.ppl.length > 0) {
                     updated_config = config;
                 }
                 updated_config.ppl.push(facebook_id);
                 updated_config.ppl_name.push(facebook_name);
-                saveConfig(url, updated_config);
+                saveConfig(new URL(url).hostname, updated_config);
             })
             removePostByBlackList();
         });
